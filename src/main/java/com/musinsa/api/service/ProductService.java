@@ -3,6 +3,7 @@ package com.musinsa.api.service;
 import com.musinsa.api.domain.Brand;
 import com.musinsa.api.domain.Category;
 import com.musinsa.api.domain.Product;
+import com.musinsa.api.dto.LowestPriceDto;
 import com.musinsa.api.repository.BrandRepository;
 import com.musinsa.api.repository.CategoryRepository;
 import com.musinsa.api.repository.ProductRepository;
@@ -10,6 +11,8 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @Transactional
@@ -31,4 +34,7 @@ public class ProductService {
         return productRepository.save(product);
     }
 
+    public List<LowestPriceDto> findLowestPriceByCategoryName() {
+        return productRepository.findLowestPriceByCategoryName();
+    }
 }
