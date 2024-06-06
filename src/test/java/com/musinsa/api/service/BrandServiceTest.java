@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 @Transactional
 @SpringBootTest
 class BrandServiceTest {
@@ -20,6 +22,6 @@ class BrandServiceTest {
     @DisplayName("브랜드등록")
     void addBrandTest_success() {
         BrandAddResp brandAddResp = brandService.addBrand("A");
-        Assertions.assertNotNull(brandAddResp.getBrandId());
+        assertNotNull(brandAddResp.getBrandId());
     }
 }

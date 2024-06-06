@@ -1,6 +1,5 @@
 package com.musinsa.api.controller;
 
-import com.musinsa.api.domain.Product;
 import com.musinsa.api.dto.ProductAddReq;
 import com.musinsa.api.dto.ProductAddResp;
 import com.musinsa.api.service.ProductService;

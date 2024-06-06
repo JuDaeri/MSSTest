@@ -2,7 +2,6 @@ package com.musinsa.api.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.musinsa.api.dto.BrandAddReq;
-import com.musinsa.api.dto.ProductAddReq;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,7 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -51,7 +49,7 @@ class BrandControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json)
                 )
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().string(Matchers.containsString("brandId")));
+                .andExpect(status().isOk())
+                .andExpect(content().string(Matchers.containsString("brandId")));
     }
 }

@@ -18,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 @Transactional
 @SpringBootTest
 class ProductServiceTest {
@@ -38,14 +40,14 @@ class ProductServiceTest {
         Category category = categoryRepository.save(new Category("상의"));
         ProductAddResp productAddResp = productService.addProduct(brand.getBrandId(), category.getCategoryId(), 1_000);
 
-        Assertions.assertNotNull(productAddResp.getProductId());
+        assertNotNull(productAddResp.getProductId());
     }
 
     @Test
     @DisplayName("상품등록시 브랜드가 없을경우")
     void addProductTest_fail1() {
         Category category = categoryRepository.save(new Category("상의"));
-        Assertions.assertThrows(EntityNotFoundException.class,
+        assertThrows(EntityNotFoundException.class,
                 () -> productService.addProduct(Long.MAX_VALUE, category.getCategoryId(), 1_000));
     }
 
@@ -54,7 +56,7 @@ class ProductServiceTest {
     void addProductTest_fail2() {
         Brand brand = brandRepository.save(new Brand("A"));
 
-        Assertions.assertThrows(EntityNotFoundException.class,
+        assertThrows(EntityNotFoundException.class,
                 () -> productService.addProduct(brand.getBrandId(), Long.MAX_VALUE, 1_000));
     }
 
@@ -65,33 +67,33 @@ class ProductServiceTest {
 
         // 구현1 예시에서 34,100원으로 되어있으나, 스니커즈 최저가가 9,000원인 건이 2개(A, G)이고
         // 가격이 같을 경우에 어떻게 처리할지에 대한 예시가 없어서 총액 43,100원으로 하였음.
-        Assertions.assertEquals(43_100, categoryLowestPricedItemResp.getTotalPrice());
+        assertEquals(43_100, categoryLowestPricedItemResp.getTotalPrice());
     }
 
     @Test
     @DisplayName("단일 브랜드로 모든 카테고리 상품을 구매할 때 최저가격에 판매하는 브랜드와 카테고리의 상품가격, 총액을 조회")
     void findLowestPriceByBrandTest() {
         List<BrandLowestPricedItemResp> brandLowestPricedItemResps = productService.findLowestPricedByBrandName();
-        Assertions.assertEquals(brandLowestPricedItemResps.size(), 1);
+        assertEquals(brandLowestPricedItemResps.size(), 1);
 
         BrandLowestPricedItemResp brandLowestPricedItemResp = brandLowestPricedItemResps.get(0);
-        Assertions.assertEquals("D", brandLowestPricedItemResp.getBrandName());
-        Assertions.assertEquals(36_100, brandLowestPricedItemResp.getTotalPrice());
-        Assertions.assertEquals(8, brandLowestPricedItemResp.getItemDtos().size());
+        assertEquals("D", brandLowestPricedItemResp.getBrandName());
+        assertEquals(36_100, brandLowestPricedItemResp.getTotalPrice());
+        assertEquals(8, brandLowestPricedItemResp.getItemDtos().size());
     }
 
     @Test
     @DisplayName("카테고리 이름으로 최저, 최고 가격 브랜드와 상품 가격을 조회")
     void findLowestPriceByCategoryNameTest() {
         PriceRangeByCategoryNameResp priceRangeByCategoryNameResp = productService.findLowestPriceByCategoryName("상의");
-        Assertions.assertEquals("상의", priceRangeByCategoryNameResp.getCategoryName());
+        assertEquals("상의", priceRangeByCategoryNameResp.getCategoryName());
 
         PriceRangeByCategoryNameResp.ItemDto lowestItem = priceRangeByCategoryNameResp.getLowestItem();
-        Assertions.assertEquals(10_000, lowestItem.getPrice());
-        Assertions.assertEquals("C", lowestItem.getBrandName());
+        assertEquals(10_000, lowestItem.getPrice());
+        assertEquals("C", lowestItem.getBrandName());
 
         PriceRangeByCategoryNameResp.ItemDto highestItem = priceRangeByCategoryNameResp.getHighestItem();
-        Assertions.assertEquals(11_400, highestItem.getPrice());
-        Assertions.assertEquals("I", highestItem.getBrandName());
+        assertEquals(11_400, highestItem.getPrice());
+        assertEquals("I", highestItem.getBrandName());
     }
 }
