@@ -2,10 +2,10 @@ package com.musinsa.api.service;
 
 import com.musinsa.api.domain.Brand;
 import com.musinsa.api.domain.Category;
-import com.musinsa.api.domain.Product;
 import com.musinsa.api.dto.BrandLowestPricedItemResp;
 import com.musinsa.api.dto.CategoryLowestPricedItemResp;
 import com.musinsa.api.dto.PriceRangeByCategoryNameResp;
+import com.musinsa.api.dto.ProductAddResp;
 import com.musinsa.api.repository.BrandRepository;
 import com.musinsa.api.repository.CategoryRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -36,9 +36,9 @@ class ProductServiceTest {
     void addProductTest_success() {
         Brand brand = brandRepository.save(new Brand("A"));
         Category category = categoryRepository.save(new Category("상의"));
-        Product product = productService.addProduct(brand.getBrandId(), category.getCategoryId(), 1_000);
+        ProductAddResp productAddResp = productService.addProduct(brand.getBrandId(), category.getCategoryId(), 1_000);
 
-        Assertions.assertNotNull(product.getProductId());
+        Assertions.assertNotNull(productAddResp.getProductId());
     }
 
     @Test

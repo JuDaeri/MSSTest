@@ -3,10 +3,7 @@ package com.musinsa.api.service;
 import com.musinsa.api.domain.Brand;
 import com.musinsa.api.domain.Category;
 import com.musinsa.api.domain.Product;
-import com.musinsa.api.dto.BrandLowestPricedItemResp;
-import com.musinsa.api.dto.CategoryLowestPricedItemDto;
-import com.musinsa.api.dto.CategoryLowestPricedItemResp;
-import com.musinsa.api.dto.PriceRangeByCategoryNameResp;
+import com.musinsa.api.dto.*;
 import com.musinsa.api.repository.BrandRepository;
 import com.musinsa.api.repository.CategoryRepository;
 import com.musinsa.api.repository.ProductRepository;
@@ -28,7 +25,7 @@ public class ProductService {
     private final BrandRepository brandRepository;
 
     // 상품 추가
-    public Product addProduct(Long brandId, Long categoryId, Integer price) {
+    public ProductAddResp addProduct(Long brandId, Long categoryId, Integer price) {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 카테고리입니다."));
 
@@ -36,7 +33,9 @@ public class ProductService {
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 브랜드입니다."));
 
         Product product = new Product(price, category, brand);
-        return productRepository.save(product);
+        productRepository.save(product);
+
+        return new ProductAddResp(product.getProductId());
     }
 
     public CategoryLowestPricedItemResp findLowestPriceByCategory() {
@@ -64,7 +63,7 @@ public class ProductService {
 
     public PriceRangeByCategoryNameResp findLowestPriceByCategoryName(String categoryName) {
         Category category = categoryRepository.findByCategoryName(categoryName)
-                .orElseThrow(() -> new EntityNotFoundException(categoryName + " 라는 카테고리명은 존재하지 않습니다."));
+                .orElseThrow(() -> new EntityNotFoundException(categoryName + "(이)라는 카테고리명은 존재하지 않습니다."));
 
         List<Product> products = category.getProducts();
         products.sort(Comparator.comparingInt(Product::getPrice));

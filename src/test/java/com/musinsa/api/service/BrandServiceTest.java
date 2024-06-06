@@ -1,6 +1,7 @@
 package com.musinsa.api.service;
 
 import com.musinsa.api.domain.Brand;
+import com.musinsa.api.dto.BrandAddResp;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,7 +19,7 @@ class BrandServiceTest {
     @Test
     @DisplayName("브랜드등록")
     void addBrandTest_success() {
-        Brand brand = brandService.addBrand("A");
-        Assertions.assertNotNull(brand.getBrandId());
+        BrandAddResp brandAddResp = brandService.addBrand("A");
+        Assertions.assertNotNull(brandAddResp.getBrandId());
     }
 }
