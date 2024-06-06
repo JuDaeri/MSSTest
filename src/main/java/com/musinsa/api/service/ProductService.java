@@ -3,7 +3,9 @@ package com.musinsa.api.service;
 import com.musinsa.api.domain.Brand;
 import com.musinsa.api.domain.Category;
 import com.musinsa.api.domain.Product;
-import com.musinsa.api.dto.LowestPriceDto;
+import com.musinsa.api.dto.BrandLowestPricedItemResp;
+import com.musinsa.api.dto.CategoryLowestPricedItemDto;
+import com.musinsa.api.dto.CategoryLowestPricedItemResp;
 import com.musinsa.api.repository.BrandRepository;
 import com.musinsa.api.repository.CategoryRepository;
 import com.musinsa.api.repository.ProductRepository;
@@ -12,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -34,7 +37,26 @@ public class ProductService {
         return productRepository.save(product);
     }
 
-    public List<LowestPriceDto> findLowestPriceByCategoryName() {
-        return productRepository.findLowestPriceByCategoryName();
+    public CategoryLowestPricedItemResp findLowestPriceByCategoryName() {
+        List<CategoryLowestPricedItemDto> categoryLowestPricedItemDtos = productRepository.findLowestPriceByCategoryName();
+        int totalPrice = categoryLowestPricedItemDtos.stream().mapToInt(CategoryLowestPricedItemDto::getLowestPrice).sum();
+        return new CategoryLowestPricedItemResp(totalPrice, categoryLowestPricedItemDtos);
+    }
+
+    public List<BrandLowestPricedItemResp> findLowestPricedByBrandName() {
+        List<Brand> brands = productRepository.findLowestPriceByBrand();
+
+        List<BrandLowestPricedItemResp> brandLowestPricedItemResps = new ArrayList<>();
+
+        for (Brand brand : brands) {
+            List<Product> products = brand.getProducts();
+            int totalPrice = products.stream().mapToInt(Product::getPrice).sum();
+            List<BrandLowestPricedItemResp.CategoryDto> categories = products.stream()
+                    .map(product -> new BrandLowestPricedItemResp.CategoryDto(product)).toList();
+
+            brandLowestPricedItemResps.add(new BrandLowestPricedItemResp(brand.getBrandName(), categories, totalPrice));
+        }
+
+        return brandLowestPricedItemResps;
     }
 }

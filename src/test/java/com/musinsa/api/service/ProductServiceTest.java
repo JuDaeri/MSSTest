@@ -3,7 +3,8 @@ package com.musinsa.api.service;
 import com.musinsa.api.domain.Brand;
 import com.musinsa.api.domain.Category;
 import com.musinsa.api.domain.Product;
-import com.musinsa.api.dto.LowestPriceDto;
+import com.musinsa.api.dto.BrandLowestPricedItemResp;
+import com.musinsa.api.dto.CategoryLowestPricedItemResp;
 import com.musinsa.api.repository.BrandRepository;
 import com.musinsa.api.repository.CategoryRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -57,13 +58,24 @@ class ProductServiceTest {
     }
 
     @Test
-    @DisplayName("카테고리별 최저가 상품")
+    @DisplayName("카테고리 별 최저가격 브랜드와 상품 가격, 총액을 조회")
     void findLowestPriceByCategoryNameTest() {
-        List<LowestPriceDto> lowestPriceDtos = productService.findLowestPriceByCategoryName();
+        CategoryLowestPricedItemResp categoryLowestPricedItemResp = productService.findLowestPriceByCategoryName();
 
         // 구현1 예시에서 34,100원으로 되어있으나, 스니커즈 최저가가 9,000원인 건이 2개(A, G)이고
         // 가격이 같을 경우에 어떻게 처리할지에 대한 예시가 없어서 총액 43,100원으로 하였음.
-        int total = lowestPriceDtos.stream().mapToInt(LowestPriceDto::getLowestPrice).sum();
-        Assertions.assertEquals(43_100, total);
+        Assertions.assertEquals(43_100, categoryLowestPricedItemResp.getTotalPrice());
+    }
+
+    @Test
+    @DisplayName("단일 브랜드로 모든 카테고리 상품을 구매할 때 최저가격에 판매하는 브랜드와 카테고리의 상품가격, 총액을 조회")
+    void findLowestPriceByBrandTest() {
+        List<BrandLowestPricedItemResp> brandLowestPricedItemResps = productService.findLowestPricedByBrandName();
+        Assertions.assertEquals(brandLowestPricedItemResps.size(), 1);
+
+        BrandLowestPricedItemResp brandLowestPricedItemResp = brandLowestPricedItemResps.get(0);
+        Assertions.assertEquals("D", brandLowestPricedItemResp.getBrandName());
+        Assertions.assertEquals(36_100, brandLowestPricedItemResp.getTotalPrice());
+        Assertions.assertEquals(8, brandLowestPricedItemResp.getCategoryDtos().size());
     }
 }
