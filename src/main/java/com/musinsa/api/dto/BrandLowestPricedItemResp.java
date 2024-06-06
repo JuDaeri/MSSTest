@@ -10,22 +10,22 @@ import java.util.List;
 @ToString
 public class BrandLowestPricedItemResp {
     private String brandName;
-    private List<CategoryDto> categoryDtos;
+    private List<ItemDto> itemDtos;
     private Integer totalPrice;
 
-    public BrandLowestPricedItemResp(String brandName, List<CategoryDto> categoryDtos, Integer totalPrice) {
+    public BrandLowestPricedItemResp(String brandName, List<ItemDto> itemDtos, Integer totalPrice) {
         this.brandName = brandName;
-        this.categoryDtos = categoryDtos;
+        this.itemDtos = itemDtos;
         this.totalPrice = totalPrice;
     }
 
     @Getter
     @ToString
-    public static class CategoryDto {
+    public static class ItemDto {
         private String categoryName;
         private Integer price;
 
-        public CategoryDto(Product product) {
+        public ItemDto(Product product) {
             this.categoryName = product.getCategory().getCategoryName();
             this.price = product.getPrice();
         }
