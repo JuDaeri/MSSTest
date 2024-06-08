@@ -50,7 +50,7 @@ public class ProductService {
         List<BrandLowestPricedItemResp> brandLowestPricedItemResps = new ArrayList<>();
 
         for (Brand brand : brands) {
-            List<Product> products = brand.getProducts();
+            List<Product> products = productRepository.findAllByBrand(brand);
             int totalPrice = products.stream().mapToInt(Product::getPrice).sum();
             List<BrandLowestPricedItemResp.ItemDto> categories = products.stream()
                     .map(product -> new BrandLowestPricedItemResp.ItemDto(product)).toList();
