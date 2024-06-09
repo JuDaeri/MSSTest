@@ -16,10 +16,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "WHERE p.price = (SELECT MIN(p2.price) FROM Product p2 WHERE p2.category.categoryId = p.category.categoryId)")
     List<CategoryLowestPricedItemDto> findLowestPriceByCategoryName();
 
-    @Query("SELECT p.brand FROM Product p GROUP BY p.brand HAVING SUM(p.price) = " +
-            "(SELECT MIN(subquery.price) FROM (SELECT SUM(p.price) as price FROM Product p GROUP BY p.brand) subquery)")
-    List<Brand> findLowestPriceByBrand();
-
     @Query("SELECT p FROM Product p JOIN FETCH p.category WHERE p.brand = :brand")
     List<Product> findAllByBrand(@Param("brand") Brand brand);
 }

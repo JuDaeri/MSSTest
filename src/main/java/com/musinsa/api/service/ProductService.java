@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.TreeSet;
 
 @Service
 @Transactional
@@ -45,32 +46,49 @@ public class ProductService {
     }
 
     public List<BrandLowestPricedItemResp> findLowestPricedByBrandName() {
-        List<Brand> brands = productRepository.findLowestPriceByBrand();
+        // 단일 브랜드로 모든 카테고리 상품을 구매할 때 최저가격에 판매하는 브랜드 검색
+        List<Brand> brands = brandRepository.findLowestPriceByBrand();
 
         List<BrandLowestPricedItemResp> brandLowestPricedItemResps = new ArrayList<>();
 
+        // 각 최저가 브랜드의 카테고리 및 총 가격 정보를 추출
         for (Brand brand : brands) {
-            List<Product> products = productRepository.findAllByBrand(brand);
-            int totalPrice = products.stream().mapToInt(Product::getPrice).sum();
-            List<BrandLowestPricedItemResp.ItemDto> categories = products.stream()
-                    .map(product -> new BrandLowestPricedItemResp.ItemDto(product)).toList();
-
-            brandLowestPricedItemResps.add(new BrandLowestPricedItemResp(brand.getBrandName(), categories, totalPrice));
+            BrandLowestPricedItemResp e = getBrandLowestPricedItemResp(brand);
+            brandLowestPricedItemResps.add(e);
         }
 
         return brandLowestPricedItemResps;
+    }
+
+    /**
+     * 각 최저가 브랜드의 카테고리 및 총 가격 정보를 추출
+     * @param brand
+     * @return BrandLowestPricedItemResp
+     */
+    private BrandLowestPricedItemResp getBrandLowestPricedItemResp(Brand brand) {
+        List<Product> products = productRepository.findAllByBrand(brand);
+
+        int totalPrice = 0;
+        List<BrandLowestPricedItemResp.ItemDto> categories = new ArrayList<>();
+
+        for (Product product : products) {
+            totalPrice += product.getPrice();
+            categories.add(new BrandLowestPricedItemResp.ItemDto(product));
+        }
+
+        return new BrandLowestPricedItemResp(brand.getBrandName(), categories, totalPrice);
     }
 
     public PriceRangeByCategoryNameResp findLowestPriceByCategoryName(String categoryName) {
         Category category = categoryRepository.findByCategoryName(categoryName)
                 .orElseThrow(() -> new EntityNotFoundException(categoryName + "(이)라는 카테고리명은 존재하지 않습니다."));
 
-        List<Product> products = category.getProducts();
-        products.sort(Comparator.comparingInt(Product::getPrice));
+        TreeSet<Product> products = new TreeSet<>(Comparator.comparingInt(Product::getPrice));
+        products.addAll(category.getProducts());
 
         return new PriceRangeByCategoryNameResp(category.getCategoryName(),
-                new PriceRangeByCategoryNameResp.ItemDto(products.get(0)), // 최저가 상품
-                new PriceRangeByCategoryNameResp.ItemDto(products.get(products.size() - 1)) // 최고가 상품
+                new PriceRangeByCategoryNameResp.ItemDto(products.first()), // 최저가 상품
+                new PriceRangeByCategoryNameResp.ItemDto(products.last()) // 최고가 상품
         );
     }
 }
