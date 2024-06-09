@@ -42,4 +42,61 @@ class ProductControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(Matchers.containsString("productId")));
     }
+
+    @Test
+    @DisplayName("상품 추가 카테고리ID 생략시")
+    void addProductTest_Error1() throws Exception {
+        ProductAddReq productAddReq = new ProductAddReq();
+        productAddReq.setCategoryId(null);
+        productAddReq.setBrandId(3l);
+        productAddReq.setPrice(300);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(productAddReq);
+
+        mockMvc.perform(post("/api/v1/product")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json)
+                )
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(Matchers.containsString("카테고리ID를 입력해주세요")));
+    }
+
+    @Test
+    @DisplayName("상품 추가 브랜드ID 생략시")
+    void addProductTest_Error2() throws Exception {
+        ProductAddReq productAddReq = new ProductAddReq();
+        productAddReq.setCategoryId(1l);
+        productAddReq.setBrandId(null);
+        productAddReq.setPrice(300);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(productAddReq);
+
+        mockMvc.perform(post("/api/v1/product")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json)
+                )
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(Matchers.containsString("브랜드ID를 입력해주세요")));
+    }
+
+    @Test
+    @DisplayName("상품 추가 가격정보 생략시")
+    void addProductTest_Error3() throws Exception {
+        ProductAddReq productAddReq = new ProductAddReq();
+        productAddReq.setCategoryId(1l);
+        productAddReq.setBrandId(3l);
+        productAddReq.setPrice(null);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(productAddReq);
+
+        mockMvc.perform(post("/api/v1/product")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json)
+                )
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(Matchers.containsString("가격을 입력해주세요")));
+    }
 }

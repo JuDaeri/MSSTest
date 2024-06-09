@@ -52,4 +52,21 @@ class BrandControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(Matchers.containsString("brandId")));
     }
+
+    @Test
+    @DisplayName("브랜드 추가시 필요한 값이 없을경우")
+    void addBrandTest_Error() throws Exception {
+
+        BrandAddReq brandAddReq = new BrandAddReq();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(brandAddReq);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/brand")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json)
+                )
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(Matchers.containsString("브랜드명을 입력해주세요")));
+    }
 }

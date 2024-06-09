@@ -6,6 +6,7 @@ import com.musinsa.api.dto.BrandLowestPricedItemResp;
 import com.musinsa.api.service.BrandService;
 import com.musinsa.api.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,7 +25,7 @@ public class BrandController {
     }
 
     @PostMapping
-    public BrandAddResp addBrand(@RequestBody BrandAddReq brandAddReq) {
+    public BrandAddResp addBrand(@RequestBody @Validated BrandAddReq brandAddReq) {
         return brandService.addBrand(brandAddReq.getBrandName());
     }
 }
