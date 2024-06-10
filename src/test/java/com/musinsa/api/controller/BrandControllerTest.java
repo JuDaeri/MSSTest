@@ -69,4 +69,11 @@ class BrandControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string(Matchers.containsString("브랜드명을 입력해주세요")));
     }
+
+    @Test
+    @DisplayName("브랜드 삭제")
+    void deleteBrandTest() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/brand/1"))
+                .andExpect(status().isOk());
+    }
 }

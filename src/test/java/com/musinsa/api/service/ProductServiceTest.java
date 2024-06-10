@@ -2,12 +2,14 @@ package com.musinsa.api.service;
 
 import com.musinsa.api.domain.Brand;
 import com.musinsa.api.domain.Category;
+import com.musinsa.api.domain.Product;
 import com.musinsa.api.dto.BrandLowestPricedItemResp;
 import com.musinsa.api.dto.CategoryLowestPricedItemResp;
 import com.musinsa.api.dto.PriceRangeByCategoryNameResp;
 import com.musinsa.api.dto.ProductAddResp;
 import com.musinsa.api.repository.BrandRepository;
 import com.musinsa.api.repository.CategoryRepository;
+import com.musinsa.api.repository.ProductRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -17,6 +19,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -32,6 +35,9 @@ class ProductServiceTest {
 
     @Autowired
     ProductService productService;
+
+    @Autowired
+    ProductRepository productRepository;
 
     @Test
     @DisplayName("상품등록")
@@ -95,5 +101,16 @@ class ProductServiceTest {
         PriceRangeByCategoryNameResp.ItemDto highestItem = priceRangeByCategoryNameResp.getHighestItem();
         assertEquals(11_400, highestItem.getPrice());
         assertEquals("I", highestItem.getBrandName());
+    }
+
+    @Test
+    @DisplayName("상품 삭제")
+    void deleteBrandTest_success() {
+        Optional<Product> product = productRepository.findById(1L);
+        assertTrue(product.isPresent());
+
+        productService.deleteProduct(1l);
+        Optional<Product> deletedProduct = productRepository.findById(1L);
+        assertFalse(deletedProduct.isPresent());
     }
 }

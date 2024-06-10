@@ -31,4 +31,10 @@ public class BrandController {
     public BrandAddResp addBrand(@RequestBody @Validated BrandAddReq brandAddReq) {
         return brandService.addBrand(brandAddReq.getBrandName());
     }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "브랜드 삭제 API")
+    public void deleteBrand(@PathVariable Long id) {
+        brandService.deleteBrand(id);
+    }
 }

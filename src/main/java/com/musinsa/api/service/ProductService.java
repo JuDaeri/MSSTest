@@ -91,4 +91,8 @@ public class ProductService {
                 new PriceRangeByCategoryNameResp.ItemDto(products.last()) // 최고가 상품
         );
     }
+
+    public void deleteProduct(Long id) {
+        productRepository.deleteById(id);
+    }
 }

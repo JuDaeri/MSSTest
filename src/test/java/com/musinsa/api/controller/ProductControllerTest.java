@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -98,5 +99,12 @@ class ProductControllerTest {
                 )
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string(Matchers.containsString("가격을 입력해주세요")));
+    }
+
+    @Test
+    @DisplayName("상품 삭제")
+    void deleteProductTest() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/product/1"))
+                .andExpect(status().isOk());
     }
 }

@@ -20,4 +20,8 @@ public class BrandService {
 
         return new BrandAddResp(brand.getBrandId());
     }
+
+    public void deleteBrand(Long id) {
+        brandRepository.deleteById(id);
+    }
 }
