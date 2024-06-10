@@ -2,6 +2,7 @@ package com.musinsa.api.service;
 
 import com.musinsa.api.domain.Brand;
 import com.musinsa.api.dto.BrandAddResp;
+import com.musinsa.api.dto.BrandUpdateReq;
 import com.musinsa.api.repository.BrandRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -40,5 +41,19 @@ class BrandServiceTest {
         brandService.deleteBrand(1l);
         Optional<Brand> deletedBrand = brandRepository.findById(1L);
         assertFalse(deletedBrand.isPresent());
+    }
+
+    @Test
+    @DisplayName("브랜드 수정")
+    void updateBrandTest_success() {
+        Brand brand = brandRepository.findById(1l).get();
+        assertEquals("A", brand.getBrandName());
+
+        BrandUpdateReq brandUpdateReq = new BrandUpdateReq();
+        brandUpdateReq.setBrandName("newbrand");
+        brandService.updateBrand(1l, brandUpdateReq);
+
+        Brand updatedBrand = brandRepository.findById(1l).get();
+        assertEquals("newbrand", updatedBrand.getBrandName());
     }
 }

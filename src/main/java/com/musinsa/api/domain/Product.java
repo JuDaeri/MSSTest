@@ -30,4 +30,18 @@ public class Product {
         this.category = category;
         this.brand = brand;
     }
+
+    public void changePrice(Integer price) {
+        this.price = price;
+    }
+
+    public void changeCategory(Category category) {
+        this.category = category;
+        this.category.getProducts().add(this);
+    }
+
+    public void changeBrand(Brand brand) {
+        this.brand = brand;
+        this.brand.getProducts().add(this);
+    }
 }

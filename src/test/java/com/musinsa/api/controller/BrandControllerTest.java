@@ -2,6 +2,7 @@ package com.musinsa.api.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.musinsa.api.dto.BrandAddReq;
+import com.musinsa.api.dto.BrandUpdateReq;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -74,6 +75,23 @@ class BrandControllerTest {
     @DisplayName("브랜드 삭제")
     void deleteBrandTest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/brand/1"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("브랜드 수정")
+    void updateBrandTest() throws Exception {
+
+        BrandUpdateReq brandUpdateReq = new BrandUpdateReq();
+        brandUpdateReq.setBrandName("newbrand");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(brandUpdateReq);
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/brand/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json)
+                )
                 .andExpect(status().isOk());
     }
 }

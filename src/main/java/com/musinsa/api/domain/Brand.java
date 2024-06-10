@@ -26,4 +26,8 @@ public class Brand {
     public Brand(String brandName) {
         this.brandName = brandName;
     }
+
+    public void changeBrandName(String brandName) {
+        this.brandName = brandName;
+    }
 }

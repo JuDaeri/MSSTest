@@ -3,6 +3,7 @@ package com.musinsa.api.controller;
 import com.musinsa.api.dto.BrandAddReq;
 import com.musinsa.api.dto.BrandAddResp;
 import com.musinsa.api.dto.BrandLowestPricedItemResp;
+import com.musinsa.api.dto.BrandUpdateReq;
 import com.musinsa.api.service.BrandService;
 import com.musinsa.api.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,5 +37,11 @@ public class BrandController {
     @Operation(summary = "브랜드 삭제 API")
     public void deleteBrand(@PathVariable Long id) {
         brandService.deleteBrand(id);
+    }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "브랜드 수정 API")
+    public void updateBrand(@PathVariable Long id, @RequestBody BrandUpdateReq brandUpdateReq) {
+        brandService.updateBrand(id, brandUpdateReq);
     }
 }

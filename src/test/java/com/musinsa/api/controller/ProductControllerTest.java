@@ -1,7 +1,9 @@
 package com.musinsa.api.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.musinsa.api.dto.BrandUpdateReq;
 import com.musinsa.api.dto.ProductAddReq;
+import com.musinsa.api.dto.ProductUpdateReq;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -105,6 +107,25 @@ class ProductControllerTest {
     @DisplayName("상품 삭제")
     void deleteProductTest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/product/1"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("상품 수정")
+    void updateProductTest() throws Exception {
+
+        ProductUpdateReq productUpdateReq = new ProductUpdateReq();
+        productUpdateReq.setPrice(5000);
+        productUpdateReq.setCategoryId(2l);
+        productUpdateReq.setBrandId(2l);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(productUpdateReq);
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/product/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json)
+                )
                 .andExpect(status().isOk());
     }
 }

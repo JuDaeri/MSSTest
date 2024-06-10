@@ -95,4 +95,18 @@ public class ProductService {
     public void deleteProduct(Long id) {
         productRepository.deleteById(id);
     }
+
+    public void updateProduct(Long id, ProductUpdateReq productUpdateReq) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("상품이 존재하지 않습니다. id : " + id));
+
+        Category category = categoryRepository.findById(productUpdateReq.getCategoryId())
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 카테고리입니다. categoryId : " + productUpdateReq.getCategoryId()));
+        Brand brand = brandRepository.findById(productUpdateReq.getBrandId())
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 브랜드입니다. brandId : " + productUpdateReq.getBrandId()));
+
+        product.changePrice(productUpdateReq.getPrice());
+        product.changeBrand(brand);
+        product.changeCategory(category);
+    }
 }

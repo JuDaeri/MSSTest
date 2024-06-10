@@ -1,7 +1,9 @@
 package com.musinsa.api.controller;
 
+import com.musinsa.api.dto.BrandUpdateReq;
 import com.musinsa.api.dto.ProductAddReq;
 import com.musinsa.api.dto.ProductAddResp;
+import com.musinsa.api.dto.ProductUpdateReq;
 import com.musinsa.api.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -26,5 +28,11 @@ public class ProductController {
     @Operation(summary = "상품 삭제 API")
     public void deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
+    }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "상품 수정 API")
+    public void updateProduct(@PathVariable Long id, @RequestBody ProductUpdateReq productUpdateReq) {
+        productService.updateProduct(id, productUpdateReq);
     }
 }

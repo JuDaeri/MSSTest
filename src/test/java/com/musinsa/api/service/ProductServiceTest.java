@@ -3,10 +3,7 @@ package com.musinsa.api.service;
 import com.musinsa.api.domain.Brand;
 import com.musinsa.api.domain.Category;
 import com.musinsa.api.domain.Product;
-import com.musinsa.api.dto.BrandLowestPricedItemResp;
-import com.musinsa.api.dto.CategoryLowestPricedItemResp;
-import com.musinsa.api.dto.PriceRangeByCategoryNameResp;
-import com.musinsa.api.dto.ProductAddResp;
+import com.musinsa.api.dto.*;
 import com.musinsa.api.repository.BrandRepository;
 import com.musinsa.api.repository.CategoryRepository;
 import com.musinsa.api.repository.ProductRepository;
@@ -105,12 +102,32 @@ class ProductServiceTest {
 
     @Test
     @DisplayName("상품 삭제")
-    void deleteBrandTest_success() {
+    void deleteProductTest_success() {
         Optional<Product> product = productRepository.findById(1L);
         assertTrue(product.isPresent());
 
         productService.deleteProduct(1l);
         Optional<Product> deletedProduct = productRepository.findById(1L);
         assertFalse(deletedProduct.isPresent());
+    }
+
+    @Test
+    @DisplayName("상품 수정")
+    void updateProductTest_success() {
+        Product product = productRepository.findById(1l).get();
+        assertEquals(11200, product.getPrice());
+        assertEquals(1l, product.getCategory().getCategoryId());
+        assertEquals(1l, product.getBrand().getBrandId());
+
+        ProductUpdateReq productUpdateReq = new ProductUpdateReq();
+        productUpdateReq.setPrice(5000);
+        productUpdateReq.setCategoryId(2l);
+        productUpdateReq.setBrandId(2l);
+
+        productService.updateProduct(1l, productUpdateReq);
+        Product updatedProduct = productRepository.findById(1l).get();
+        assertEquals(5000, updatedProduct.getPrice());
+        assertEquals(2l, updatedProduct.getCategory().getCategoryId());
+        assertEquals(2l, updatedProduct.getBrand().getBrandId());
     }
 }
