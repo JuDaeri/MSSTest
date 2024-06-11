@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.TreeSet;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,7 +42,18 @@ public class ProductService {
     }
 
     public CategoryLowestPricedItemResp findLowestPriceByCategory() {
-        List<CategoryLowestPricedItemDto> categoryLowestPricedItemDtos = productRepository.findLowestPriceByCategoryName();
+        List<CategoryLowestPricedItemDto> categoryLowestPricedItemDtos = productRepository.findLowestPriceByCategoryName()
+                .stream()
+                .map(a -> new CategoryLowestPricedItemDto(a))
+                .collect(Collectors.toMap(
+                        CategoryLowestPricedItemDto::getCategoryName,
+                        Function.identity(),
+                        (dto1, dto2) -> dto1.getBrandName().compareTo(dto2.getBrandName()) > 0 ? dto1 : dto2
+                ))
+                .values()
+                .stream()
+                .collect(Collectors.toList());
+
         int totalPrice = categoryLowestPricedItemDtos.stream().mapToInt(CategoryLowestPricedItemDto::getLowestPrice).sum();
         return new CategoryLowestPricedItemResp(totalPrice, categoryLowestPricedItemDtos);
     }
