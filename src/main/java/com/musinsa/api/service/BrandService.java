@@ -2,6 +2,7 @@ package com.musinsa.api.service;
 
 import com.musinsa.api.domain.Brand;
 import com.musinsa.api.dto.BrandAddResp;
+import com.musinsa.api.dto.BrandFindResp;
 import com.musinsa.api.dto.BrandUpdateReq;
 import com.musinsa.api.repository.BrandRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -33,4 +34,11 @@ public class BrandService {
 
         brand.changeBrandName(brandUpdateReq.getBrandName());
     }
+
+    public BrandFindResp.BrandDto findByBrandId(Long id) {
+        Brand brand = brandRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("찾으려는 브랜드가 존재하지 않습니다. id : " + id));
+        return new BrandFindResp.BrandDto(brand);
+    }
+
 }

@@ -2,9 +2,10 @@ package com.musinsa.api.service;
 
 import com.musinsa.api.domain.Brand;
 import com.musinsa.api.dto.BrandAddResp;
+import com.musinsa.api.dto.BrandFindResp;
 import com.musinsa.api.dto.BrandUpdateReq;
 import com.musinsa.api.repository.BrandRepository;
-import org.junit.jupiter.api.Assertions;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +23,6 @@ class BrandServiceTest {
     @Autowired
     BrandService brandService;
 
-    @Autowired
-    BrandRepository brandRepository;
-
     @Test
     @DisplayName("브랜드등록")
     void addBrandTest_success() {
@@ -35,25 +33,24 @@ class BrandServiceTest {
     @Test
     @DisplayName("브랜드 삭제")
     void deleteBrandTest_success() {
-        Optional<Brand> brand = brandRepository.findById(1L);
-        assertTrue(brand.isPresent());
+        BrandFindResp.BrandDto brandDto = brandService.findByBrandId(1L);
+        assertNotNull(brandDto);
 
         brandService.deleteBrand(1l);
-        Optional<Brand> deletedBrand = brandRepository.findById(1L);
-        assertFalse(deletedBrand.isPresent());
+        assertThrows(EntityNotFoundException.class, () -> brandService.findByBrandId(1L));
     }
 
     @Test
     @DisplayName("브랜드 수정")
     void updateBrandTest_success() {
-        Brand brand = brandRepository.findById(1l).get();
-        assertEquals("A", brand.getBrandName());
+        BrandFindResp.BrandDto brandDto = brandService.findByBrandId(1L);
+        assertEquals("A", brandDto.getBrandName());
 
         BrandUpdateReq brandUpdateReq = new BrandUpdateReq();
         brandUpdateReq.setBrandName("newbrand");
         brandService.updateBrand(1l, brandUpdateReq);
 
-        Brand updatedBrand = brandRepository.findById(1l).get();
-        assertEquals("newbrand", updatedBrand.getBrandName());
+        BrandFindResp.BrandDto updatedBrandDto = brandService.findByBrandId(1L);
+        assertEquals("newbrand", updatedBrandDto.getBrandName());
     }
 }

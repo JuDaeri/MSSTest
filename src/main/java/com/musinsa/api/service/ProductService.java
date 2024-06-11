@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -108,5 +109,11 @@ public class ProductService {
         product.changePrice(productUpdateReq.getPrice());
         product.changeBrand(brand);
         product.changeCategory(category);
+    }
+
+    public ProductFindResp.ProductDto findByProductId(Long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("찾으려는 상품이 존재하지 않습니다. id : " + id));
+        return new ProductFindResp.ProductDto(product);
     }
 }

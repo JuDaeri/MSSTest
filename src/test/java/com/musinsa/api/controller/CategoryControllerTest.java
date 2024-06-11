@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -21,8 +22,8 @@ class CategoryControllerTest {
     @Test
     @DisplayName("카테고리 별 최저가격 브랜드와 상품 가격, 총액을 조회")
     void getLowestPriceTest() throws Exception {
-        String expectedContent = "{\"totalPrice\":43100,\"categoryLowestPricedItemDtos\":[{\"categoryName\":\"상의\",\"brandName\":\"C\",\"lowestPrice\":10000},{\"categoryName\":\"아우터\",\"brandName\":\"E\",\"lowestPrice\":5000},{\"categoryName\":\"바지\",\"brandName\":\"D\",\"lowestPrice\":3000},{\"categoryName\":\"스니커즈\",\"brandName\":\"A\",\"lowestPrice\":9000},{\"categoryName\":\"스니커즈\",\"brandName\":\"G\",\"lowestPrice\":9000},{\"categoryName\":\"가방\",\"brandName\":\"A\",\"lowestPrice\":2000},{\"categoryName\":\"모자\",\"brandName\":\"D\",\"lowestPrice\":1500},{\"categoryName\":\"양말\",\"brandName\":\"I\",\"lowestPrice\":1700},{\"categoryName\":\"악세서리\",\"brandName\":\"F\",\"lowestPrice\":1900}]}";
-        mockMvc.perform(get("/api/v1/category/lowest-price"))
+        String expectedContent = "{\"totalPrice\":34100,\"categoryLowestPricedItemDtos\":[{\"categoryName\":\"상의\",\"brandName\":\"C\",\"lowestPrice\":10000},{\"categoryName\":\"아우터\",\"brandName\":\"E\",\"lowestPrice\":5000},{\"categoryName\":\"바지\",\"brandName\":\"D\",\"lowestPrice\":3000},{\"categoryName\":\"스니커즈\",\"brandName\":\"G\",\"lowestPrice\":9000},{\"categoryName\":\"가방\",\"brandName\":\"A\",\"lowestPrice\":2000},{\"categoryName\":\"모자\",\"brandName\":\"D\",\"lowestPrice\":1500},{\"categoryName\":\"양말\",\"brandName\":\"I\",\"lowestPrice\":1700},{\"categoryName\":\"악세서리\",\"brandName\":\"F\",\"lowestPrice\":1900}]}";
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/category/lowest-price"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(expectedContent));
     }

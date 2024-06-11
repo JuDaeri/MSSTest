@@ -1,9 +1,6 @@
 package com.musinsa.api.controller;
 
-import com.musinsa.api.dto.BrandAddReq;
-import com.musinsa.api.dto.BrandAddResp;
-import com.musinsa.api.dto.BrandLowestPricedItemResp;
-import com.musinsa.api.dto.BrandUpdateReq;
+import com.musinsa.api.dto.*;
 import com.musinsa.api.service.BrandService;
 import com.musinsa.api.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -43,5 +40,11 @@ public class BrandController {
     @Operation(summary = "브랜드 수정 API")
     public void updateBrand(@PathVariable Long id, @RequestBody BrandUpdateReq brandUpdateReq) {
         brandService.updateBrand(id, brandUpdateReq);
+    }
+
+    @GetMapping("/{id}")
+    @Operation(summary = "특정 ID의 브랜드 조회하는 API")
+    public BrandFindResp.BrandDto getLowestTotalPrice(@PathVariable Long id) {
+        return brandService.findByBrandId(id);
     }
 }

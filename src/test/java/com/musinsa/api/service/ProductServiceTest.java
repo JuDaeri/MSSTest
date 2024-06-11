@@ -8,7 +8,6 @@ import com.musinsa.api.repository.BrandRepository;
 import com.musinsa.api.repository.CategoryRepository;
 import com.musinsa.api.repository.ProductRepository;
 import jakarta.persistence.EntityNotFoundException;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +31,6 @@ class ProductServiceTest {
 
     @Autowired
     ProductService productService;
-
-    @Autowired
-    ProductRepository productRepository;
 
     @Test
     @DisplayName("상품등록")
@@ -70,7 +66,7 @@ class ProductServiceTest {
 
         // 구현1 예시에서 34,100원으로 되어있으나, 스니커즈 최저가가 9,000원인 건이 2개(A, G)이고
         // 가격이 같을 경우에 어떻게 처리할지에 대한 예시가 없어서 총액 43,100원으로 하였음.
-        assertEquals(43_100, categoryLowestPricedItemResp.getTotalPrice());
+        assertEquals(34_100, categoryLowestPricedItemResp.getTotalPrice());
     }
 
     @Test
@@ -103,21 +99,21 @@ class ProductServiceTest {
     @Test
     @DisplayName("상품 삭제")
     void deleteProductTest_success() {
-        Optional<Product> product = productRepository.findById(1L);
-        assertTrue(product.isPresent());
+        ProductFindResp.ProductDto productDto = productService.findByProductId(1L);
+        assertNotNull(productDto);
 
         productService.deleteProduct(1l);
-        Optional<Product> deletedProduct = productRepository.findById(1L);
-        assertFalse(deletedProduct.isPresent());
+
+        assertThrows(EntityNotFoundException.class, () -> productService.findByProductId(1L));
     }
 
     @Test
     @DisplayName("상품 수정")
     void updateProductTest_success() {
-        Product product = productRepository.findById(1l).get();
-        assertEquals(11200, product.getPrice());
-        assertEquals(1l, product.getCategory().getCategoryId());
-        assertEquals(1l, product.getBrand().getBrandId());
+        ProductFindResp.ProductDto productDto = productService.findByProductId(1L);
+        assertEquals(11200, productDto.getPrice());
+        assertEquals(1l, productDto.getCategoryId());
+        assertEquals(1l, productDto.getBrandId());
 
         ProductUpdateReq productUpdateReq = new ProductUpdateReq();
         productUpdateReq.setPrice(5000);
@@ -125,9 +121,9 @@ class ProductServiceTest {
         productUpdateReq.setBrandId(2l);
 
         productService.updateProduct(1l, productUpdateReq);
-        Product updatedProduct = productRepository.findById(1l).get();
-        assertEquals(5000, updatedProduct.getPrice());
-        assertEquals(2l, updatedProduct.getCategory().getCategoryId());
-        assertEquals(2l, updatedProduct.getBrand().getBrandId());
+        ProductFindResp.ProductDto updatedProductDto = productService.findByProductId(1L);
+        assertEquals(5000, updatedProductDto.getPrice());
+        assertEquals(2l, updatedProductDto.getCategoryId());
+        assertEquals(2l, updatedProductDto.getBrandId());
     }
 }

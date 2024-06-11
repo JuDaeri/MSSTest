@@ -1,9 +1,6 @@
 package com.musinsa.api.controller;
 
-import com.musinsa.api.dto.BrandUpdateReq;
-import com.musinsa.api.dto.ProductAddReq;
-import com.musinsa.api.dto.ProductAddResp;
-import com.musinsa.api.dto.ProductUpdateReq;
+import com.musinsa.api.dto.*;
 import com.musinsa.api.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -34,5 +31,11 @@ public class ProductController {
     @Operation(summary = "상품 수정 API")
     public void updateProduct(@PathVariable Long id, @RequestBody ProductUpdateReq productUpdateReq) {
         productService.updateProduct(id, productUpdateReq);
+    }
+
+    @GetMapping("/{id}")
+    @Operation(summary = "특정 ID의 상품을 조회하는 API")
+    public ProductFindResp.ProductDto getLowestTotalPrice(@PathVariable Long id) {
+        return productService.findByProductId(id);
     }
 }
