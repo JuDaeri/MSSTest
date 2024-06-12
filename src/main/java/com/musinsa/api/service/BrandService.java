@@ -37,14 +37,14 @@ public class BrandService {
 
     public void updateBrand(Long id, BrandUpdateReq brandUpdateReq) {
         Brand brand = brandRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("갱신하려는 브랜드가 존재하지 않습니다. id : " + id));
+                .orElseThrow(() -> new EntityNotFoundException("갱신하려는 브랜드가 존재하지 않습니다. brandId : " + id));
 
         brand.changeBrandName(brandUpdateReq.getBrandName());
     }
 
     public BrandFindResp.BrandDto findByBrandId(Long id) {
         Brand brand = brandRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("찾으려는 브랜드가 존재하지 않습니다. id : " + id));
+                .orElseThrow(() -> new EntityNotFoundException("찾으려는 브랜드가 존재하지 않습니다. brandId : " + id));
         return new BrandFindResp.BrandDto(brand);
     }
 

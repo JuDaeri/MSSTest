@@ -25,10 +25,10 @@ public class ProductService {
     // 상품 추가
     public ProductAddResp addProduct(Long brandId, Long categoryId, Integer price) {
         Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 카테고리입니다."));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 카테고리입니다. categoryId : " + categoryId));
 
         Brand brand = brandRepository.findById(brandId)
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 브랜드입니다."));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 브랜드입니다. brandId : " + brandId));
 
         Product product = new Product(price, category, brand);
         productRepository.save(product);
@@ -42,7 +42,7 @@ public class ProductService {
 
     public void updateProduct(Long id, ProductUpdateReq productUpdateReq) {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("상품이 존재하지 않습니다. id : " + id));
+                .orElseThrow(() -> new EntityNotFoundException("상품이 존재하지 않습니다. productId : " + id));
 
         Category category = categoryRepository.findById(productUpdateReq.getCategoryId())
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 카테고리입니다. categoryId : " + productUpdateReq.getCategoryId()));
@@ -56,7 +56,7 @@ public class ProductService {
 
     public ProductFindResp.ProductDto findByProductId(Long id) {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("찾으려는 상품이 존재하지 않습니다. id : " + id));
+                .orElseThrow(() -> new EntityNotFoundException("찾으려는 상품이 존재하지 않습니다. productId : " + id));
         return new ProductFindResp.ProductDto(product);
     }
 }
