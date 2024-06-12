@@ -2,7 +2,6 @@ package com.musinsa.api.controller;
 
 import com.musinsa.api.dto.*;
 import com.musinsa.api.service.BrandService;
-import com.musinsa.api.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
@@ -15,13 +14,12 @@ import java.util.List;
 @RequestMapping("/api/v1/brand")
 public class BrandController {
 
-    private final ProductService productService;
     private final BrandService brandService;
 
     @GetMapping("/lowest-total-price")
     @Operation(summary = "단일 브랜드로 모든 카테고리 상품을 구매할 때 최저가격에 판매하는 브랜드와 카테고리의 상품가격, 총액을 조회하는 API")
     public List<BrandLowestPricedItemResp> getLowestTotalPrice() {
-        return productService.findLowestPricedByBrandName();
+        return brandService.findLowestPricedByBrandName();
     }
 
     @PostMapping

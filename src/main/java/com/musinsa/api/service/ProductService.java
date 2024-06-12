@@ -3,7 +3,9 @@ package com.musinsa.api.service;
 import com.musinsa.api.domain.Brand;
 import com.musinsa.api.domain.Category;
 import com.musinsa.api.domain.Product;
-import com.musinsa.api.dto.*;
+import com.musinsa.api.dto.ProductAddResp;
+import com.musinsa.api.dto.ProductFindResp;
+import com.musinsa.api.dto.ProductUpdateReq;
 import com.musinsa.api.repository.BrandRepository;
 import com.musinsa.api.repository.CategoryRepository;
 import com.musinsa.api.repository.ProductRepository;
@@ -11,13 +13,6 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.TreeSet;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -39,70 +34,6 @@ public class ProductService {
         productRepository.save(product);
 
         return new ProductAddResp(product.getProductId());
-    }
-
-    public CategoryLowestPricedItemResp findLowestPriceByCategory() {
-        List<CategoryLowestPricedItemDto> categoryLowestPricedItemDtos = productRepository.findLowestPriceByCategoryName()
-                .stream()
-                .map(a -> new CategoryLowestPricedItemDto(a))
-                .collect(Collectors.toMap(
-                        CategoryLowestPricedItemDto::getCategoryName,
-                        Function.identity(),
-                        (dto1, dto2) -> dto1.getBrandName().compareTo(dto2.getBrandName()) > 0 ? dto1 : dto2
-                ))
-                .values()
-                .stream()
-                .collect(Collectors.toList());
-
-        int totalPrice = categoryLowestPricedItemDtos.stream().mapToInt(CategoryLowestPricedItemDto::getLowestPrice).sum();
-        return new CategoryLowestPricedItemResp(totalPrice, categoryLowestPricedItemDtos);
-    }
-
-    public List<BrandLowestPricedItemResp> findLowestPricedByBrandName() {
-        // 단일 브랜드로 모든 카테고리 상품을 구매할 때 최저가격에 판매하는 브랜드 검색
-        List<Brand> brands = brandRepository.findLowestPriceByBrand();
-
-        List<BrandLowestPricedItemResp> brandLowestPricedItemResps = new ArrayList<>();
-
-        // 각 최저가 브랜드의 카테고리 및 총 가격 정보를 추출
-        for (Brand brand : brands) {
-            BrandLowestPricedItemResp e = getBrandLowestPricedItemResp(brand);
-            brandLowestPricedItemResps.add(e);
-        }
-
-        return brandLowestPricedItemResps;
-    }
-
-    /**
-     * 각 최저가 브랜드의 카테고리 및 총 가격 정보를 추출
-     * @param brand
-     * @return BrandLowestPricedItemResp
-     */
-    private BrandLowestPricedItemResp getBrandLowestPricedItemResp(Brand brand) {
-        List<Product> products = productRepository.findAllByBrand(brand);
-
-        int totalPrice = 0;
-        List<BrandLowestPricedItemResp.ItemDto> categories = new ArrayList<>();
-
-        for (Product product : products) {
-            totalPrice += product.getPrice();
-            categories.add(new BrandLowestPricedItemResp.ItemDto(product));
-        }
-
-        return new BrandLowestPricedItemResp(brand.getBrandName(), categories, totalPrice);
-    }
-
-    public PriceRangeByCategoryNameResp findLowestPriceByCategoryName(String categoryName) {
-        Category category = categoryRepository.findByCategoryName(categoryName)
-                .orElseThrow(() -> new EntityNotFoundException(categoryName + "(이)라는 카테고리명은 존재하지 않습니다."));
-
-        TreeSet<Product> products = new TreeSet<>(Comparator.comparingInt(Product::getPrice));
-        products.addAll(category.getProducts());
-
-        return new PriceRangeByCategoryNameResp(category.getCategoryName(),
-                new PriceRangeByCategoryNameResp.ItemDto(products.first()), // 최저가 상품
-                new PriceRangeByCategoryNameResp.ItemDto(products.last()) // 최고가 상품
-        );
     }
 
     public void deleteProduct(Long id) {
