@@ -16,8 +16,8 @@ spring:
   sql:
     init:
       mode: always
-      schema-locations: classpath:sql/schema.sql
-      data-locations: classpath:sql/data.sql
+      schema-locations: classpath:sql/schema-test.sql
+      data-locations: classpath:sql/data-test.sql
 server:
   servlet:
     encoding:
